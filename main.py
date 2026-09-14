@@ -4,8 +4,15 @@ import time
 EPSILON = 1e-10
 
 
+def print_matrix(matrix):
+    """Print a matrix with readable values rounded to two decimal places."""
+    for row in matrix:
+        formatted_row = [f"{value:.2f}" for value in row]
+        print(f"[{', '.join(formatted_row)}]")
+
+
 def rref(matrix):
-    """Return the reduced row-echelon form of a matrix."""
+    """Return the reduced row-echelon form of a matrix, showing each operation."""
 
     #make a copy of the matrix
     result = []
@@ -36,11 +43,20 @@ def rref(matrix):
         #if the pivot found is not in the pivot row, swap the two rows
         if pivot != pivot_row:
             result[pivot_row], result[pivot] = result[pivot], result[pivot_row]
+            print(
+                f"\nSwap row {pivot_row + 1} with row {pivot + 1}:"
+            )
+            print_matrix(result)
 
         pivot_value = result[pivot_row][pivot_column]
         
         for column_index in range(column_count):
             result[pivot_row][column_index] /= pivot_value
+        print(
+            f"\nNormalize row {pivot_row + 1} using pivot column "
+            f"{pivot_column + 1}:"
+        )
+        print_matrix(result)
 
         for row_index in range(row_count):
             if row_index == pivot_row:
@@ -50,6 +66,11 @@ def rref(matrix):
                 continue
             for column_index in range(column_count):
                 result[row_index][column_index] -= factor * result[pivot_row][column_index]
+            print(
+                f"\nNormalize pivot column {pivot_column + 1} by clearing "
+                f"row {row_index + 1}:"
+            )
+            print_matrix(result)
 
         pivot_row += 1
 
@@ -108,10 +129,12 @@ Here you can calculate any size square matrix. Want to continue?
             continue
 
         matrix = read_matrix(size)
-        print(matrix)
+        print("\nStarting matrix:")
+        print_matrix(matrix)
         start = time.time()
         reduced_matrix = rref(matrix)
-        print("Final RREF is:", reduced_matrix)
+        print("\nFinal RREF:")
+        print_matrix(reduced_matrix)
         print("Execution time:", time.time() - start, "seconds")
 
 
